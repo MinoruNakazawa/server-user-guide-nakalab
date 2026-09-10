@@ -5,12 +5,16 @@
 # トンネルは管理者がQuadraで維持する。利用者が起動する必要はない。
 # 直接接続の-lan・AWS経由の-ssmは ssh_config.example を参照。
 #
+# 鍵の作成・公開鍵の提出は ../docs/ssh-key-setup.md、全体構成は ../docs/system-overview.md を参照。
+# 鍵の-Cコメントは識別用。Userには管理者が確定したアカウント名を指定する。
+# ProxyJumpはPCから各接続先の認証を行う。秘密鍵のコピーやForwardAgentは不要。
+#
 # 置換値：
 # __CAMPUS_SSH_USER__ : 管理者から割り当てられた本人の学内踏み台アカウント
 # __SSH_USER__ : 管理者から通知された本人のFreeIPAユーザー名（Quadra・GPU用）
 # __IDENTITY_FILE__ : 本人のPC上の秘密鍵。例：~/.ssh/id_ed25519_i2lab
 # 公開鍵は管理者が踏み台・FreeIPAの両方へ登録する。
-# 同じ本人の鍵を使う例。別の踏み台鍵を通知された場合はcampus-jumpのIdentityFileだけ変更する。
+# 同じ本人の鍵を使う例。踏み台用に別鍵の作成・登録を指示された場合はcampus-jumpのIdentityFileだけ変更する。
 # Quadraの常駐トンネル専用鍵は利用者の鍵と別物で、利用者へ配布しない。
 #
 # 保存先：macOS/Ubuntuは ~/.ssh/config、Windowsは %USERPROFILE%\.ssh\config（拡張子なし）。
@@ -43,7 +47,7 @@ Host campus-jump
     IdentityFile __IDENTITY_FILE__
     IdentitiesOnly yes
     AddKeysToAgent yes
-    # 踏み台用に別の鍵を通知された場合は、このIdentityFileを変更する。
+    # 踏み台用に別鍵を作成・登録した場合は、このIdentityFileを変更する。
     # Userは利用者に割り当てられた踏み台アカウントへ変更する。
     ServerAliveInterval 60
     ServerAliveCountMax 3

@@ -2,7 +2,9 @@
 
 ## 1. このガイドについて
 
-本書は、研究室メンバーが学外ネットワークからQuadra-6000経由でGPUサーバーへ接続する手順である。
+本書は、AWS利用許可のある研究室メンバーが、学外・自宅などからQuadra-6000経由でGPUサーバーへ接続する手順である。学内でもAWSへの必要な通信が可能なら使用できる。
+
+[システム全体と接続経路の比較](system-overview.md)に、`-campus` との違い、SSOとSSHの役割、初回に受け取る設定情報をまとめている。
 
 研究室外の学内利用者・ゼミ生は、AWSを使わない[学内利用者マニュアル](campus-user-guide.md)を使用する。研究室内の利用者は`-lan`・`-campus`・`-ssm`を利用でき、本書はそのうち`-ssm`の手順を扱う。
 
@@ -19,7 +21,7 @@
 AWS Systems Manager → Quadra-6000 → GPUサーバー
 ```
 
-AWS認証はQuadraまでのSSM経路を許可し、FreeIPA userとSSH公開鍵はQuadraおよびGPUサーバーへのloginを許可する。両方が必要である。
+AWS認証はQuadraまでのSSM経路を許可し、FreeIPA userとSSH公開鍵はQuadraおよびGPUサーバーへのloginを許可する。両方が必要である。SSOログインだけではGPUへログインできず、SSH configの `User` にはAWSユーザー名ではなくFreeIPAユーザー名を指定する。`quadra-ssm` の `ProxyCommand` がSSMの通信路を作り、GPUの `ProxyJump` がQuadraを中継する。学内踏み台のアカウントやcampusトンネルは使わない。
 
 現在のGPU接続対象はRTX-A6000x2、AIsawa（RTX 6000 Ada搭載機）、RTX-6000ada、RTX4090、RTX5090の5台である。AIsawaの正式FQDNは`aisawaminori.i2lab.test`だが、接続時は短いSSH alias `aisawa-ssm`を使用する。利用者は申請・承認されたGPUだけへ接続する。
 
@@ -52,6 +54,8 @@ AWS認証はQuadraまでのSSM経路を許可し、FreeIPA userとSSH公開鍵�
 | 利用期間 | 開始日と終了予定日 |
 
 公開鍵とfingerprintは**両方**を送る。公開鍵はFreeIPAへ登録するために必要であり、fingerprintは管理者が登録した鍵と利用者の鍵が一致することを、短い文字列で相互確認するために必要である。秘密鍵、秘密鍵passphrase、AWS credential、MFA codeは送らない。
+
+鍵が未作成なら、[SSH鍵の作成とFreeIPA登録](ssh-key-setup.md)を先に進める。アカウント発行前でも鍵は作成できる。希望名を鍵のコメントに書くだけでは登録されないため、公開鍵登録完了と確定ユーザー名の通知を待って接続する。
 
 ### 3.2 利用するOS別の初期設定手順
 

@@ -7,6 +7,8 @@
 | 研究室内の利用者 | [研究室内利用者の入口](docs/README.md#lab-users) | -lan・-ssm。条件に応じて-campusも利用可能 |
 | 研究室外の学内利用者・ゼミ生 | [学内利用者マニュアル](docs/campus-user-guide.md) | -campus（AWS不要） |
 
+初めての方は、[システム全体と3つの接続経路](docs/system-overview.md)で仕組みを確認し、[SSH鍵の作成とFreeIPA登録](docs/ssh-key-setup.md)へ進んでください。希望ユーザー名と鍵の関係、OS別の作成方法、公開鍵の提出から接続までを説明しています。
+
 ## 接続方法
 
 - **-lan**：対象GPUへ直接到達できる研究室LANなどで使用。AWS認証は不要。

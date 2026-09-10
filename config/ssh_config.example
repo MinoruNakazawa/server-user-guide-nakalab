@@ -6,6 +6,10 @@
 # -lanだけ使う場合、下の-ssmブロックとAWSの値の設定は不要。
 # -ssmでGPUを使う場合はquadra-ssmも取り込む。
 #
+# 鍵の作成・公開鍵の提出は ../docs/ssh-key-setup.md、全体構成は ../docs/system-overview.md を参照。
+# 鍵の-Cコメントは識別用。Userには管理者が確定したアカウント名を指定する。
+# ProxyJumpはPCから各接続先の認証を行う。秘密鍵のコピーやForwardAgentは不要。
+#
 # 置換値：
 # __SSH_USER__ : 管理者から通知された本人のFreeIPAユーザー名
 # __IDENTITY_FILE__ : 本人のPC上の秘密鍵。例：~/.ssh/id_ed25519_i2lab

@@ -11,13 +11,15 @@
 
 研究室内の `-lan` は接続先への直接通信が可能なネットワーク、`-campus` は学内踏み台へ到達できるネットワーク、`-ssm` はAWS経由で接続する場合に使います。いずれも承認されたサーバー・権限の範囲で利用します。
 
-本書で使用する経路は次のとおりです。
+[全体構成と接続経路の比較](system-overview.md)も参照してください。本書で使用する経路は次のとおりです。
 
 ```text
-自分のPC → 学内踏み台 → Quadra → 許可されたGPUサーバー
+自分のPC → 学内踏み台 → 常駐リバーストンネル → Quadra → 許可されたGPUサーバー
 ```
 
 学内踏み台は `www.ic.kanazawa-it.ac.jp` です。学内の別の部屋やprivateネットワークでも、このホストのSSHへ到達できることが条件です。「学内にいる」だけでは通信が保証されません。Quadraと踏み台の間のトンネルは管理者が維持します。利用者がトンネルを起動する必要はありません。
+
+トンネルはQuadraから踏み台へ張られ、踏み台内部の `127.0.0.1:2222` をQuadraのSSHへ転送します。`127.0.0.1` はここでは自分のPCではなく踏み台から見た宛先です。仕組みは[リバーストンネルの説明](system-overview.md#3--campus学内踏み台とリバーストンネル)を参照してください。
 
 ## 2. 申請する
 
@@ -38,45 +40,9 @@
 
 ## 3. 自分のPCでSSH鍵を準備する
 
-### 3.1 SSHコマンドの確認
+[SSH鍵の作成とFreeIPAアカウントへの登録](ssh-key-setup.md)を順番に進めてください。希望するFreeIPAユーザー名は申請項目であり、鍵のコメントに書くだけでは登録されません。管理者が確定したアカウントへ公開鍵を登録します。
 
-macOSはターミナル、WindowsはPowerShell、Ubuntuは端末を開きます。
-
-```text
-ssh -V
-```
-
-バージョンが表示されれば進めます。コマンドがない場合、Windowsは「オプション機能」からOpenSSHクライアントを追加します。Ubuntuは以下で導入します。
-
-```bash
-sudo apt update
-sudo apt install openssh-client
-```
-
-### 3.2 鍵を作成する
-
-既に同名の鍵を使っている場合は上書きしません。鍵作成時に上書きを聞かれたら `n` で中止し、既存鍵の利用について管理者へ確認してください。利用者の鍵にはパスフレーズを設定します。入力中は文字が表示されません。
-
-**macOS・Ubuntu：**
-
-```bash
-mkdir -p ~/.ssh
-chmod 700 ~/.ssh
-ssh-keygen -t ed25519 -a 100 -f ~/.ssh/id_ed25519_i2lab
-cat ~/.ssh/id_ed25519_i2lab.pub
-ssh-keygen -lf ~/.ssh/id_ed25519_i2lab.pub -E sha256
-```
-
-**Windows PowerShell：**
-
-```powershell
-New-Item -ItemType Directory -Force -Path "$env:USERPROFILE\.ssh" | Out-Null
-ssh-keygen -t ed25519 -a 100 -f "$env:USERPROFILE\.ssh\id_ed25519_i2lab"
-Get-Content "$env:USERPROFILE\.ssh\id_ed25519_i2lab.pub"
-ssh-keygen -lf "$env:USERPROFILE\.ssh\id_ed25519_i2lab.pub" -E sha256
-```
-
-`ssh-ed25519 AAAA...` から末尾までが公開鍵です。改行を挿入せず1行全体を提出します。拡張子なしの `id_ed25519_i2lab` は秘密鍵で、自分のPCに保管します。サーバーや共有フォルダ、Git、チャットへコピーしません。
+自分のPCで鍵を作成し、公開鍵（`.pub`）の1行全体と指紋を提出します。秘密鍵はPCに保管します。既存鍵を上書きせず、すでに提出済みなら作り直しません。本経路では踏み台・FreeIPA両方への登録完了を待って、次へ進みます。
 
 ## 4. 管理者から利用開始の通知を受け取る
 

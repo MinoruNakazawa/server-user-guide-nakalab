@@ -41,19 +41,9 @@ code --install-extension ms-vscode-remote.remote-ssh
 
 ## 2. SSH鍵を作成して提出する
 
-`USERNAME`を自分のFreeIPA usernameへ置き換える。passphraseは空にせず、本人だけが管理する。
+[SSH鍵の作成とFreeIPAアカウントへの登録](ssh-key-setup.md)の、このOSに対応する手順を進める。希望名と鍵のコメントの違い、既存鍵の確認、パスフレーズの入力、公開鍵・指紋の提出までを説明している。すでに本人の鍵が登録済みなら再作成しない。
 
-```bash
-install -d -m 700 ~/.ssh
-ssh-keygen -t ed25519 -a 100 \
-  -f ~/.ssh/id_ed25519_i2lab \
-  -C "USERNAME@i2lab.test"
-
-cat ~/.ssh/id_ed25519_i2lab.pub
-ssh-keygen -lf ~/.ssh/id_ed25519_i2lab.pub -E sha256
-```
-
-公開鍵の1行全体と表示された`SHA256:...` fingerprintを管理者へ送る。秘密鍵は送らない。
+鍵は普段使用する本人のPCアカウントで作成する。管理者へ提出するのは公開鍵と指紋であり、秘密鍵はPCに保管する。SSH設定には希望名ではなく、管理者が確定・通知したFreeIPAユーザー名を使用する。
 
 ## 3. AWS IAM Identity Centerを設定する
 
