@@ -1,0 +1,127 @@
+# 学内踏み台経由（-campus）：研究室外の学内利用者向け。研究室内利用者も使用可。
+# AWSアカウント・AWS CLI・SSO loginは不要。
+# PC → 学内踏み台 → リバーストンネル → Quadra → GPU。学内踏み台のTCP/22へ到達できること。
+# campus-jumpとquadra-campusは必須。GPUは許可された接続先のブロックを取り込む。
+# トンネルは管理者がQuadraで維持する。利用者が起動する必要はない。
+# 直接接続の-lan・AWS経由の-ssmは ssh_config.example を参照。
+#
+# 置換値：
+# __CAMPUS_SSH_USER__ : 管理者から割り当てられた本人の学内踏み台アカウント
+# __SSH_USER__ : 管理者から通知された本人のFreeIPAユーザー名（Quadra・GPU用）
+# __IDENTITY_FILE__ : 本人のPC上の秘密鍵。例：~/.ssh/id_ed25519_i2lab
+# 公開鍵は管理者が踏み台・FreeIPAの両方へ登録する。
+# 同じ本人の鍵を使う例。別の踏み台鍵を通知された場合はcampus-jumpのIdentityFileだけ変更する。
+# Quadraの常駐トンネル専用鍵は利用者の鍵と別物で、利用者へ配布しない。
+#
+# 保存先：macOS/Ubuntuは ~/.ssh/config、Windowsは %USERPROFILE%\.ssh\config（拡張子なし）。
+# このexampleを編集するだけでは反映されない。必要なHostブロックを本人のconfigへ取り込む。
+# 既存configをバックアップし、同名Hostは追記せず更新する。他のHostは保持する。
+# HostNameはIPまたはホスト名だけを記載し、http://やMarkdownリンクを入れない。
+# IdentityFileは秘密鍵（.pubなし）。空白を含むパスは二重引用符で囲む。
+# Windowsの例："C:/Users/本人のWindowsユーザー名/.ssh/id_ed25519_i2lab"
+# 利用者の秘密鍵はPCに保管し、GPU・踏み台へコピーしない。
+# macOS/Ubuntu：mkdir -p ~/.ssh/sockets && chmod 700 ~/.ssh ~/.ssh/sockets
+# 保存後：chmod 600 ~/.ssh/config （macOS/Ubuntu）
+# Windows標準OpenSSH：ControlMaster / ControlPath / ControlPersistの3種類の行を削除する。
+#
+# Host：PCで選ぶ接続名。HostName：接続先。User：その接続先で使う本人のアカウント。
+# IdentityFile / IdentitiesOnly：使用する鍵を指定し、無関係な鍵の提示を抑える。
+# AddKeysToAgent：読み込んだ鍵をエージェントへ追加。パスフレーズは必要に応じて入力する。
+# ServerAliveInterval / ServerAliveCountMax：応答を定期確認し、応答が続けて失われた接続を終了する。
+# ControlMaster / ControlPath / ControlPersist：macOS/Ubuntuで経路別に接続を共有する。
+# 保存後は ssh -G 接続名 で設定を確認し、ssh 接続名 'hostname -f; whoami' で実接続を確認する。
+# 未置換の __...__ がないことを確認する。初回ホスト鍵は管理者通知の指紋と照合する。
+
+# ProxyJump：quadra-campusはcampus-jumpを経由、GPUの-campusはquadra-campusを経由する。
+# quadra-campusの127.0.0.1:2222は踏み台側から見た宛先で、QuadraのSSHへ転送される。
+# HostKeyAlias：トンネルの接続先をQuadraのホスト鍵（192.168.73.98）として照合する。
+# 接続例：ssh quadra-campus / ssh rtx5090-campus
+
+Host campus-jump
+    HostName www.ic.kanazawa-it.ac.jp
+    User __CAMPUS_SSH_USER__
+    IdentityFile __IDENTITY_FILE__
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+    # 踏み台用に別の鍵を通知された場合は、このIdentityFileを変更する。
+    # Userは利用者に割り当てられた踏み台アカウントへ変更する。
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+
+Host quadra-campus
+    HostName 127.0.0.1
+    Port 2222
+    HostKeyAlias 192.168.73.98
+    User __SSH_USER__
+    IdentityFile __IDENTITY_FILE__
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    ProxyJump campus-jump
+
+Host rtx-a6000x2-campus
+    HostName 192.168.73.83
+    User __SSH_USER__
+    IdentityFile __IDENTITY_FILE__
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    ProxyJump quadra-campus
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/campus-%C
+    ControlPersist 600
+
+# AIsawa（RTX 6000 Ada搭載機）。2つ目は旧aliasとの互換用。
+Host aisawa-campus aisawa-minori-campus
+    HostName 192.168.73.213
+    User __SSH_USER__
+    IdentityFile __IDENTITY_FILE__
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    ProxyJump quadra-campus
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/campus-%C
+    ControlPersist 600
+
+Host rtx-6000ada-campus
+    HostName 192.168.73.239
+    User __SSH_USER__
+    IdentityFile __IDENTITY_FILE__
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    ProxyJump quadra-campus
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/campus-%C
+    ControlPersist 600
+
+Host rtx4090-campus
+    HostName 192.168.73.134
+    User __SSH_USER__
+    IdentityFile __IDENTITY_FILE__
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    ProxyJump quadra-campus
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/campus-%C
+    ControlPersist 600
+
+Host rtx5090-campus
+    HostName 192.168.73.163
+    User __SSH_USER__
+    IdentityFile __IDENTITY_FILE__
+    IdentitiesOnly yes
+    AddKeysToAgent yes
+    ServerAliveInterval 60
+    ServerAliveCountMax 3
+    ProxyJump quadra-campus
+    ControlMaster auto
+    ControlPath ~/.ssh/sockets/campus-%C
+    ControlPersist 600
