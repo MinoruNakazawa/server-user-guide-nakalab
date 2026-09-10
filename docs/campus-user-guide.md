@@ -21,7 +21,7 @@
 
 ## 2. 申請する
 
-管理者は中沢実（[nakazawa@infor.kanazawa-it.ac.jp](mailto:nakazawa@infor.kanazawa-it.ac.jp)）です。申請は、管理者へ大学のメールアドレスから申請内容を送ってください。AWS情報は取得せず、「研究室外・学内利用のみ（-campus）、AWS利用なし」と明記します。
+管理者は中沢実（[nakazawa@infor.kanazawa-it.ac.jp](mailto:nakazawa@infor.kanazawa-it.ac.jp)）です。申請は、[申請フォーム](https://forms.cloud.microsoft/pages/responsepage.aspx?id=Xbxum3IjmUClZWULy8MnT6rI0kF_K9lEhfaBpChXa5JUNzlWOE05NlQxWVFDNlExMVhRV09BT05YSS4u&route=shorturl)，もしくは，管理者へ大学のメールアドレスから申請内容を送ってください。AWS情報は取得せず、「研究室外・学内利用のみ（-campus）、AWS利用なし」と明記します。
 
 | 申請内容 | 記載すること |
 | --- | --- |
