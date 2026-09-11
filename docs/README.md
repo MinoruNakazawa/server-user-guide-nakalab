@@ -53,7 +53,7 @@ ssh rtx5090-ssm 'hostname -f; whoami; nvidia-smi'
 
 **[学内利用者マニュアル：申請から動作確認まで](campus-user-guide.md)を最初から順に進めてください。**
 
-学内のPCから、本人の踏み台アカウントとFreeIPAアカウントで接続します。
+学内のPCから、踏み台の中継専用 `campus-relay` と本人のFreeIPAアカウントで接続します。踏み台でも利用者ごとに登録された本人の鍵で認証します。シェル・コマンド実行は許可されず、QuadraのSSH入口への中継だけを利用できます。
 
 ```text
 自分のPC → 学内踏み台 → Quadra → 許可されたGPUサーバー

@@ -10,10 +10,11 @@
 # ProxyJumpはPCから各接続先の認証を行う。秘密鍵のコピーやForwardAgentは不要。
 #
 # 置換値：
-# __CAMPUS_SSH_USER__ : 管理者から割り当てられた本人の学内踏み台アカウント
 # __SSH_USER__ : 管理者から通知された本人のFreeIPAユーザー名（Quadra・GPU用）
 # __IDENTITY_FILE__ : 本人のPC上の秘密鍵。例：~/.ssh/id_ed25519_i2lab
-# 公開鍵は管理者が踏み台・FreeIPAの両方へ登録する。
+# 公開鍵は管理者が踏み台のcampus-relayと本人のFreeIPAアカウントの両方へ登録する。
+# campus-relayは中継専用。シェル・コマンド実行は禁止し、QuadraのSSH入口への転送だけを許可する。
+# 踏み台ユーザー名は共通でも、認証には利用者ごとに登録された本人の鍵を使う。
 # 同じ本人の鍵を使う例。踏み台用に別鍵の作成・登録を指示された場合はcampus-jumpのIdentityFileだけ変更する。
 # Quadraの常駐トンネル専用鍵は利用者の鍵と別物で、利用者へ配布しない。
 #
@@ -43,12 +44,12 @@
 
 Host campus-jump
     HostName www.ic.kanazawa-it.ac.jp
-    User __CAMPUS_SSH_USER__
+    User campus-relay
     IdentityFile __IDENTITY_FILE__
     IdentitiesOnly yes
     AddKeysToAgent yes
     # 踏み台用に別鍵を作成・登録した場合は、このIdentityFileを変更する。
-    # Userは利用者に割り当てられた踏み台アカウントへ変更する。
+    # 踏み台のUserはcampus-relay。Quadra・GPUのUserは本人のFreeIPAユーザー名。
     ServerAliveInterval 60
     ServerAliveCountMax 3
 

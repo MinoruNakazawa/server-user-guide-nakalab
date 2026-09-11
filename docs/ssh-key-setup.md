@@ -120,13 +120,13 @@ ssh-keygen -lf "$env:USERPROFILE\.ssh\id_ed25519_i2lab.pub" -E sha256
 
 拡張子なしのファイルは秘密鍵です。`-----BEGIN OPENSSH PRIVATE KEY-----` と表示された場合は秘密鍵を開いています。その内容を提出しないでください。秘密鍵・パスフレーズ・パスワードは、サーバー、共有領域、Git、Issue、チャットへコピーしません。
 
-`-campus` では、管理者が**本人の学内踏み台アカウントとFreeIPAアカウントの両方**へ公開鍵を登録します。同じ本人の鍵を使う設定例ですが、踏み台用に別鍵を作るよう指示された場合は、本人のPCで別名の鍵を作り、その公開鍵を提出してください。管理者がトンネル維持に使う専用鍵は利用者の鍵とは別です。
+`-campus` では、管理者が**踏み台の中継専用 `campus-relay` と本人のFreeIPAアカウントの両方**へ公開鍵を登録します。同じ本人の鍵を使う設定例ですが、踏み台用に別鍵を作るよう指示された場合は、本人のPCで別名の鍵を作り、その公開鍵を提出してください。管理者がトンネル維持に使う専用鍵は利用者の鍵とは別です。
 
 ## 5. 登録完了後にSSH設定へ反映する
 
-管理者から確定したFreeIPAユーザー名、公開鍵登録完了と指紋、許可GPU、サーバーのホスト鍵指紋を受け取ります。`-campus` では踏み台アカウントとその登録完了も必要です。**鍵を作っただけ、または申請しただけでは接続できません。**
+管理者から確定したFreeIPAユーザー名、公開鍵登録完了と指紋、許可GPU、サーバーのホスト鍵指紋を受け取ります。`-campus` では踏み台の `campus-relay` への本人の公開鍵登録完了と中継利用許可も必要です。**鍵を作っただけ、または申請しただけでは接続できません。**
 
-利用する経路の設定例を自分のPCのSSH configへ取り込みます。
+利用する経路の設定例を自分のPCのSSH configへ取り込みます。`-campus` の `campus-jump` は `User campus-relay` を使用します。Quadra・GPUの `User` には本人のFreeIPAユーザー名を設定します。
 
 - `-lan`・`-ssm`：[直接接続・AWS経由の設定例](../config/ssh_config.example)
 - `-campus`：[学内踏み台経由の設定例](../config/ssh_config.campus.example)
@@ -134,7 +134,6 @@ ssh-keygen -lf "$env:USERPROFILE\.ssh\id_ed25519_i2lab.pub" -E sha256
 | 設定例の置換箇所 | 設定する値 |
 | --- | --- |
 | `__SSH_USER__` | 管理者から通知されたFreeIPAユーザー名。例：`taro` |
-| `__CAMPUS_SSH_USER__` | 本人用の踏み台ユーザー名。FreeIPAと同じとは限らない |
 | `__IDENTITY_FILE__` | 秘密鍵のパス。macOS・Ubuntuの例：`~/.ssh/id_ed25519_i2lab`。`.pub` は付けない |
 
 Windowsの秘密鍵パスは `"C:/Users/本人のWindowsユーザー名/.ssh/id_ed25519_i2lab"` のように指定します。このパスのユーザー名は**PCのユーザー名**で、`User` に書くFreeIPAユーザー名とは区別します。

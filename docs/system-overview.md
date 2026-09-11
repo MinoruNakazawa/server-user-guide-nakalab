@@ -23,7 +23,7 @@ flowchart LR
 
 | 構成要素 | 役割 | 利用者に関係すること |
 | --- | --- | --- |
-| 学内踏み台 `www.ic.kanazawa-it.ac.jp` | `-campus` の入口 | 本人用の踏み台アカウントと公開鍵登録が必要 |
+| 学内踏み台 `www.ic.kanazawa-it.ac.jp` | `-campus` の入口 | 中継専用 `campus-relay` への本人の公開鍵登録が必要 |
 | Quadra-6000 `quadra.i2lab.test` | SSH中継、NFS共有、FreeIPA VMのホスト、SSMの接続先 | `-campus`・`-ssm` の両方が経由する |
 | FreeIPA `ipa.i2lab.test` | 利用者名・グループ・UID/GID・SSH公開鍵を一元管理 | 管理者が公開鍵を本人のアカウントへ登録。Quadra・GPUはSSSDという仕組みで参照する |
 | GPUサーバー5台 | GPU計算、研究環境・コンテナの実行 | 承認されたサーバーへ本人のFreeIPAアカウントでログインする |
@@ -41,7 +41,7 @@ FreeIPAはSSHの中継先ではありません。利用者がFreeIPAサーバー
 | 接続元の条件 | 対象GPUの `192.168.73.x:22` へ直接通信できる | 学内踏み台のSSH（TCP/22）へ通信できる | AWSの認証・SSMに必要な通信ができる。自宅・学外のほか学内でも利用可 |
 | 経路 | PC → GPU | PC → 学内踏み台 → トンネル → Quadra → GPU | PC → AWS SSM → Quadra → GPU |
 | FreeIPAアカウント・SSH鍵 | 必要 | 必要 | 必要 |
-| 本人用の学内踏み台アカウント | 不要 | 必要 | 不要 |
+| 踏み台の `campus-relay` への公開鍵登録 | 不要 | 必要 | 不要 |
 | AWSアカウント・MFA・SSM権限 | 不要 | 不要 | 必要 |
 | PCに必要なツール | OpenSSH | OpenSSH | OpenSSH、AWS CLI v2、Session Manager Plugin |
 | 接続前のAWSログイン | 不要 | 不要 | `aws sso login --profile i2lab`（本人のprofile名に合わせる） |
@@ -52,11 +52,17 @@ FreeIPAはSSHの中継先ではありません。利用者がFreeIPAサーバー
 
 ## 3. `-campus`：学内踏み台とリバーストンネル
 
+踏み台（`www.ic.kanazawa-it.ac.jp`）には、中継専用アカウント `campus-relay` を設けています。このアカウントではシェルへのログインやコマンド実行を禁止し、QuadraのSSH入口（踏み台内部の `127.0.0.1:2222`）への通信中継だけを許可します。利用者ごとの公開鍵を踏み台に登録し、中継を利用する際にも本人の鍵で公開鍵認証を行います。踏み台ユーザー名は共通ですが、秘密鍵は共有しません。
+
+踏み台と中沢研究室のQuadraは、専用のSSH鍵を使ったリバースSSHトンネルで接続されています。利用者はこのトンネルを通り、Quadra、さらにGPUサーバーへ接続します。
+
+研究室内ではFreeIPAで利用者のアカウント・公開鍵・グループを一元管理し、Quadraや各GPUサーバーがその情報を参照して本人を認証します。これにより、**利用者は共通の研究室アカウントで、利用を許可されたGPUサーバーへアクセスできます。** ここで「共通」とは、本人のアカウントを複数サーバーで使える意味で、利用者全員が同じ研究室アカウントを共有する意味ではありません。
+
 設定後、自分のPCで `ssh rtx5090-campus` を実行すると、SSHが次の中継を自動で行います。
 
 ```text
 自分のPC
-  → campus-jump：学内踏み台のSSH（本人の踏み台ユーザー名）
+  → campus-jump：学内踏み台のSSH（campus-relay、本人の鍵で認証）
   → 踏み台内部の 127.0.0.1:2222
   → 常駐トンネルを通ってQuadraのSSH（本人のFreeIPAユーザー名）
   → RTX5090のSSH（本人のFreeIPAユーザー名）
@@ -68,7 +74,7 @@ FreeIPAはSSHの中継先ではありません。利用者がFreeIPAサーバー
 
 利用者は `ssh -R` の実行やサービスの起動を行いません。管理者がQuadraの `campus-tunnel.service` を維持します。トンネル維持用の専用鍵は利用者のSSH鍵とは別で、配布されません。
 
-踏み台とFreeIPAは別のアカウント管理です。同じ本人の公開鍵を使う場合でも、管理者による両方への登録が必要です。踏み台の `User` には本人に通知された踏み台ユーザー名、Quadra・GPUの `User` には確定したFreeIPAユーザー名を設定します。
+踏み台とFreeIPAは別のアカウント管理です。同じ本人の公開鍵を使う場合でも、管理者による両方への登録が必要です。踏み台の `User` には `campus-relay`、Quadra・GPUの `User` には確定したFreeIPAユーザー名を設定します。
 
 [学内用SSH設定例](../config/ssh_config.campus.example)に従えば、自分のPCから1回のコマンドで対象GPUへ接続できます。途中のサーバーへ手動ログインして次の `ssh` を打つ必要はありません。秘密鍵のコピーや `ssh -A` によるエージェント転送も不要です。
 
@@ -150,4 +156,4 @@ ssh rtx5090-ssm 'hostname -f; whoami; nvidia-smi'
 - [学内接続の設定例](https://github.com/nakalab/summer-server-infrastructure/blob/c5275616296f9b180677fe7b542de4ef02fbff55/config/ssh_config.campus.example)
 - [直接接続・SSMの設定例](https://github.com/nakalab/summer-server-infrastructure/blob/c5275616296f9b180677fe7b542de4ef02fbff55/config/ssh_config.example)
 
-これは構成資料・設定ファイルの照合であり、この更新でサーバーへの実接続試験は行っていません。実際の利用開始は、本人のPCと登録済みアカウントで確認してください。
+上記は構成資料・設定ファイルの照合です。中継専用 `campus-relay` の説明は、管理者から通知された運用構成を反映しています。2026-09-11に利用者から共有された端末出力では、旧踏み台ユーザー `pi` を経由したQuadra・RTX5090への接続と、RTX5090の `nvidia-smi` によるGPU認識を確認しました。これは `campus-relay` での接続やシェル・コマンド実行の禁止を検証した結果ではありません。今後の接続には `campus-relay` を使用し、本人のPCと登録済みの鍵で利用開始を確認してください。
