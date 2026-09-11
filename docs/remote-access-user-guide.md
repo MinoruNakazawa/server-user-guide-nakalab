@@ -32,7 +32,7 @@ AWS認証はQuadraまでのSSM経路を許可し、FreeIPA userとSSH公開鍵�
 - NFS、LDAP、Kerberos、FreeIPA Web UI、SSH portをインターネットへ公開しない
 - 利用を終える場合、端末を紛失した場合、鍵漏えいが疑われる場合は直ちに管理者へ連絡する
 
-公開鍵（`.pub`）とfingerprintは管理者へ提出してよいが、秘密鍵は提出しない。
+公開鍵（`.pub`）とFingerPrint（指紋）は管理者へ提出してよいが、秘密鍵は提出しない。
 
 ## 3. 初回設定
 
@@ -48,12 +48,12 @@ AWS認証はQuadraまでのSSM経路を許可し、FreeIPA userとSSH公開鍵�
 | 希望するFreeIPA username | 英小文字・数字・`-`を使用し、他利用者と重複しない名前 |
 | 大学または研究室のemail address | 連絡・利用終了確認に使うaddress |
 | SSH公開鍵 | `.pub` fileの**1行全体**（`ssh-ed25519 AAAA...`からcommentまで） |
-| SSH公開鍵fingerprint | `ssh-keygen -lf ... -E sha256`で表示される`SHA256:...` |
+| SSH公開鍵のFingerPrint（指紋） | `ssh-keygen -lf ... -E sha256`で表示される`SHA256:...` |
 | 利用するGPUサーバー | 必要なhost名と用途 |
 | 利用する共有領域 | 通常は`labusers`。特別project領域が必要な場合はproject名 |
 | 利用期間 | 開始日と終了予定日 |
 
-公開鍵とfingerprintは**両方**を送る。公開鍵はFreeIPAへ登録するために必要であり、fingerprintは管理者が登録した鍵と利用者の鍵が一致することを、短い文字列で相互確認するために必要である。秘密鍵、秘密鍵passphrase、AWS credential、MFA codeは送らない。
+公開鍵とFingerPrint（指紋）は**両方**を送る。公開鍵はFreeIPAへ登録するために必要であり、FingerPrint（指紋）は管理者が登録した鍵と利用者の鍵が一致することを、短い文字列で相互確認するために必要である。秘密鍵、秘密鍵passphrase、AWS credential、MFA codeは送らない。
 
 鍵が未作成なら、[SSH鍵の作成とFreeIPA登録](ssh-key-setup.md)を先に進める。アカウント発行前でも鍵は作成できる。希望名を鍵のコメントに書くだけでは登録されないため、公開鍵登録完了と確定ユーザー名の通知を待って接続する。
 
@@ -67,7 +67,7 @@ AWS認証はQuadraまでのSSM経路を許可し、FreeIPA userとSSH公開鍵�
 | Windows 11 | [Windows 11向け利用手順](remote-access-windows-guide.md) |
 | Ubuntu 22.04／24.04 | [Ubuntu向け利用手順](remote-access-ubuntu-guide.md) |
 
-管理者へ送るのは、SSH公開鍵の1行全体と`SHA256:...` fingerprintだけである。秘密鍵、passphrase、MFA code、AWS credentialは送らない。
+管理者へ送るのは、SSH公開鍵の1行全体と`SHA256:...` FingerPrint（指紋）だけである。秘密鍵、passphrase、MFA code、AWS credentialは送らない。
 
 ## 4. 日常の接続
 

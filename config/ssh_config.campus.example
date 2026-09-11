@@ -35,7 +35,7 @@
 # ServerAliveInterval / ServerAliveCountMax：応答を定期確認し、応答が続けて失われた接続を終了する。
 # ControlMaster / ControlPath / ControlPersist：macOS/Ubuntuで経路別に接続を共有する。
 # 保存後は ssh -G 接続名 で設定を確認し、ssh 接続名 'hostname -f; whoami' で実接続を確認する。
-# 未置換の __...__ がないことを確認する。初回ホスト鍵は管理者通知の指紋と照合する。
+# 未置換の __...__ がないことを確認する。初回ホスト鍵は管理者通知のFingerPrint（指紋）と照合する。
 
 # ProxyJump：quadra-campusはcampus-jumpを経由、GPUの-campusはquadra-campusを経由する。
 # quadra-campusの127.0.0.1:2222は踏み台側から見た宛先で、QuadraのSSHへ転送される。

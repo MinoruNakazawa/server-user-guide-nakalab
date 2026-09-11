@@ -34,7 +34,7 @@
 # ServerAliveInterval / ServerAliveCountMax：応答を定期確認し、応答が続けて失われた接続を終了する。
 # ControlMaster / ControlPath / ControlPersist：macOS/Ubuntuで経路別に接続を共有する。
 # 保存後は ssh -G 接続名 で設定を確認し、ssh 接続名 'hostname -f; whoami' で実接続を確認する。
-# 未置換の __...__ がないことを確認する。初回ホスト鍵は管理者通知の指紋と照合する。
+# 未置換の __...__ がないことを確認する。初回ホスト鍵は管理者通知のFingerPrint（指紋）と照合する。
 
 # ProxyJump：GPUの-ssmはquadra-ssmを経由。-lanには中継設定を付けない。
 # ProxyCommand：quadra-ssmでSession Managerを起動してSSH通信路を作る。

@@ -144,7 +144,7 @@ ssh quadra-ssm 'hostname -f; whoami'
 ssh rtx5090-ssm 'hostname -f; whoami; nvidia-smi'
 ```
 
-初回のホスト鍵指紋は管理者からの通知と照合します。Quadraでは `quadra.i2lab.test`、RTX5090では `rtx5090.i2lab.test` と本人のFreeIPAユーザー名が期待値です。`nvidia-smi` はGPU認識の確認であり、研究プログラムの動作確認は別途必要です。
+初回のホスト鍵のFingerPrint（指紋）は管理者からの通知と照合します。Quadraでは `quadra.i2lab.test`、RTX5090では `rtx5090.i2lab.test` と本人のFreeIPAユーザー名が期待値です。`nvidia-smi` はGPU認識の確認であり、研究プログラムの動作確認は別途必要です。
 
 | 失敗した段階 | 確認するところ |
 | --- | --- |

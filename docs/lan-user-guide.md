@@ -4,13 +4,13 @@
 
 ## 1. 申請とSSH鍵の準備
 
-[利用申請フォーム](https://forms.cloud.microsoft/r/mgFXy680J1)で、研究室内利用者・-lan利用であることと、氏名・連絡先・利用目的・期間・希望GPUを伝えてください。本人の公開鍵と指紋も提出します。
+[利用申請フォーム](https://forms.cloud.microsoft/r/mgFXy680J1)で、研究室内利用者・-lan利用であることと、氏名・連絡先・利用目的・期間・希望GPUを伝えてください。本人の公開鍵とFingerPrint（指紋）も提出します。
 
 SSH鍵がない場合は[SSH鍵の準備](ssh-key-setup.md)へ進みます。既存の鍵は上書きしません。秘密鍵とパスフレーズは提出しないでください。
 
 ## 2. 承認と設定
 
-管理者から本人のFreeIPAユーザー名・公開鍵登録完了・許可GPU・共有領域・ホスト鍵指紋の通知を受け取ります。
+管理者から本人のFreeIPAユーザー名・公開鍵登録完了・許可GPU・共有領域・ホスト鍵のFingerPrint（指紋）の通知を受け取ります。
 [研究室内向け設定例](../config/ssh_config.example)のコメントに従い、-lanのブロックを本人のPCへ取り込んでください。AWS用のブロックは不要です。
 
 ## 3. 動作確認
@@ -21,7 +21,7 @@ SSH鍵がない場合は[SSH鍵の準備](ssh-key-setup.md)へ進みます。既
 ssh rtx5090-lan 'hostname -f; whoami; id; nvidia-smi'
 ```
 
-初回は通知されたホスト鍵指紋と照合します。`rtx5090.i2lab.test`、本人のユーザー名、承認されたグループ、GPU情報が表示されれば基本確認は成功です。nvidia-smiはGPU認識の確認であり、個別の研究プログラムの動作試験は別途行います。
+初回は通知されたホスト鍵のFingerPrint（指紋）と照合します。`rtx5090.i2lab.test`、本人のユーザー名、承認されたグループ、GPU情報が表示されれば基本確認は成功です。nvidia-smiはGPU認識の確認であり、個別の研究プログラムの動作試験は別途行います。
 
 共有領域は[共有領域の確認手順](remote-access-user-guide.md#43-nfs共有を使う)、Dockerは[Docker利用ガイド](docker-user-guide.md)を参照してください。この節のGPU上の操作は-lanでも共通です。SSO loginの節は実施しません。
 

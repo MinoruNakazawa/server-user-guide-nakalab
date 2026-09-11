@@ -3,7 +3,7 @@
 自分の利用区分を選んでください。初めて利用する場合は、申請・承認と本人のSSH公開鍵の登録が必要です。
 
 - [システム全体と接続経路の選び方](system-overview.md)：構成図、`-campus` と `-ssm` の違い、アカウントと共有領域の仕組み
-- [SSH鍵の作成とFreeIPAアカウントへの登録](ssh-key-setup.md)：希望ユーザー名との関係、OS別の鍵作成、公開鍵・指紋の提出、SSH設定への反映
+- [SSH鍵の作成とFreeIPAアカウントへの登録](ssh-key-setup.md)：希望ユーザー名との関係、OS別の鍵作成、公開鍵・FingerPrint（指紋）の提出、SSH設定への反映
 
 | 利用区分 | 最初に読むところ | 接続方法 | AWSの準備 |
 | --- | --- | --- | --- |
@@ -20,7 +20,7 @@
 
 | 手順 | 参照先 |
 | --- | --- |
-| 1. 利用を申請する | [利用申請フォーム](https://forms.cloud.microsoft/r/mgFXy680J1)。利用目的・期間・対象GPU・必要な接続経路を申請し、[SSH鍵の準備](ssh-key-setup.md)で作成した本人の公開鍵と指紋を提出 |
+| 1. 利用を申請する | [利用申請フォーム](https://forms.cloud.microsoft/r/mgFXy680J1)。利用目的・期間・対象GPU・必要な接続経路を申請し、[SSH鍵の準備](ssh-key-setup.md)で作成した本人の公開鍵とFingerPrint（指紋）を提出 |
 | 2. 承認とアカウント通知を受け取る | FreeIPAユーザー名、公開鍵登録完了、許可GPUを確認。`-ssm`を使う人はAWSの設定情報も受領 |
 | 3. SSH configを設定する | [研究室内向け設定例](../config/ssh_config.example)の冒頭コメントに従う |
 | 4. `-lan`で接続する | [直接接続の利用手順](lan-user-guide.md)。AWS SSO loginは不要 |
@@ -60,7 +60,7 @@ ssh rtx5090-ssm 'hostname -f; whoami; nvidia-smi'
 ```
 
 1. 学内利用のみであることを明記して申請する。
-2. 本人のSSH鍵を準備し、公開鍵と指紋を提出する。
+2. 本人のSSH鍵を準備し、公開鍵とFingerPrint（指紋）を提出する。
 3. 踏み台・FreeIPA両方への登録完了と、利用許可の通知を受け取る。
 4. [学内向け設定例](../config/ssh_config.campus.example)を自分のSSH configへ取り込み、ユーザー名・鍵パスを置き換える。
 5. マニュアルの確認表に沿って、Quadra・GPU・共有領域・必要に応じてVS Codeの動作を確認する。
