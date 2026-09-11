@@ -73,6 +73,10 @@ ssh rtx5090-campus 'hostname -f; whoami; nvidia-smi'
 
 利用者がトンネルを起動・常駐化する必要はありません。踏み台へ到達できない、またはトンネルが停止している場合は管理者へ連絡してください。
 
+## 接続後のDocker利用（全経路共通）
+
+[Docker利用ガイド](docker-user-guide.md)を参照してください。利用権限の確認、コンテナの準備、GPU・NFSの確認、共同利用の注意事項をまとめています。
+
 ## 問い合わせ
 
 接続・利用許可に関する問い合わせは、中沢実（[nakazawa@infor.kanazawa-it.ac.jp](mailto:nakazawa@infor.kanazawa-it.ac.jp)）へ連絡してください。

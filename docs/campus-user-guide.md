@@ -140,7 +140,7 @@ check_file=$(mktemp ./campus-check.XXXXXXXX) && {
 
 `campus access check` が読み出せ、所有者が本人・グループが管理者の指定どおりであることを確認します。試験ファイルだけを削除します。共有領域の親ディレクトリは一覧できない場合があるため、通知されたパスを直接指定します。権限エラーをsudoやchmodで回避せず、管理者へ連絡してください。
 
-Dockerを許可されている場合のみ `docker version` と `docker ps` で利用可否を確認します。他人のコンテナを停止・変更しません。
+Dockerを許可されている場合は、[Docker利用ガイド](docker-user-guide.md)に従い、`docker version` と `docker ps` で利用可否を確認します。研究用コンテナの準備・GPU確認・データ保存も同ガイドを参照してください。
 
 確認後は `exit` で自分のPCへ戻ります。
 

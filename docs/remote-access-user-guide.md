@@ -126,16 +126,7 @@ pwd
 
 ### 4.4 GPUサーバーでDockerを使う
 
-RTX-A6000x2、AIsawa（RTX 6000 Ada搭載機）、RTX-6000ada、RTX4090、RTX5090では、`labusers`または`go2poc`へ追加された利用者はsudoなしでDockerを実行できる。
-
-RTX5090も共通ACL設定によるsudoなしのDocker利用に対応する。
-
-```bash
-docker version
-docker ps
-```
-
-Docker実行権限はroot相当である。他利用者のcontainer、image、volume、networkを停止・削除・変更しない。containerを起動する前に、GPU、port、volume、利用期間を関係者と確認する。
+[Docker利用ガイド](docker-user-guide.md)に、対象サーバー・FreeIPAグループによる利用権限、`docker version` と `docker ps` による確認、研究用コンテナの準備、NFSへの保存と共同利用の注意事項をまとめています。GPUサーバーへ接続した後の操作は、`-lan`・`-campus`・`-ssm` で共通です。
 
 ### 4.5 VS Code Remote-SSHから接続する
 

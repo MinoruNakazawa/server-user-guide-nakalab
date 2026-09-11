@@ -23,7 +23,7 @@ ssh rtx5090-lan 'hostname -f; whoami; id; nvidia-smi'
 
 初回は通知されたホスト鍵指紋と照合します。`rtx5090.i2lab.test`、本人のユーザー名、承認されたグループ、GPU情報が表示されれば基本確認は成功です。nvidia-smiはGPU認識の確認であり、個別の研究プログラムの動作試験は別途行います。
 
-共有領域とDockerは[利用者ガイドの共有領域・Docker手順](remote-access-user-guide.md#43-nfs共有を使う)を参照してください。この節のGPU上の操作は-lanでも共通です。SSO loginの節は実施しません。
+共有領域は[共有領域の確認手順](remote-access-user-guide.md#43-nfs共有を使う)、Dockerは[Docker利用ガイド](docker-user-guide.md)を参照してください。この節のGPU上の操作は-lanでも共通です。SSO loginの節は実施しません。
 
 VS Code Remote-SSHでは承認された-lan接続名を選び、リモート端末でホスト名とユーザー名を確認します。
 
