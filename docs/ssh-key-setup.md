@@ -1,6 +1,6 @@
 # 利用者のSSH鍵の作成とFreeIPAアカウントへの登録
 
-**自分のPCで秘密鍵と公開鍵のペアを作り、公開鍵だけを希望するFreeIPAユーザー名と一緒に申請します。** 管理者が確定したアカウントへ公開鍵を登録した後、そのユーザー名と手元の秘密鍵をSSH設定に指定して接続します。`-lan`・`-campus`・`-ssm`で鍵の作り方は共通です。
+**自分のPCで秘密鍵と公開鍵のペアを作り、公開鍵だけを希望するFreeIPAユーザー名と一緒に申請します。** 管理者が確定したアカウントへ公開鍵を登録した後、そのユーザー名と手元の秘密鍵をSSH設定に指定して接続します。`-lan`・`-campus`で鍵の作り方は共通です。
 
 ## 1. 希望アカウントとSSH鍵の関係
 
@@ -22,7 +22,7 @@ PCのログイン名とFreeIPAユーザー名は異なっていて構いませ�
 | 秘密鍵 `id_ed25519_i2lab` | 本人のPCで認証に使うファイル。提出しない |
 | 公開鍵 `id_ed25519_i2lab.pub` | 管理者が本人のアカウントへ登録するファイル |
 | 鍵のコメント（例：`taro@i2lab.test`） | 鍵を見分けるメモ。アカウントの作成・指定・登録は行わない。メールアドレスである必要もない |
-| 鍵のパスフレーズ | PC上の秘密鍵を保護するために自分で決める文字列。FreeIPAやAWSのパスワードとは別 |
+| 鍵のパスフレーズ | PC上の秘密鍵を保護するために自分で決める文字列。FreeIPAのパスワードとは別 |
 | 公開鍵のFingerPrint（指紋） `SHA256:...` | 提出した鍵と登録された鍵を照合するための短い識別値。FingerPrint（指紋）だけでは公開鍵の登録はできない |
 
 `ssh-keygen` の `-C` はコメントの指定です。`-C "taro@i2lab.test"` と書くだけで `taro` のアカウントに結び付くわけではありません。鍵の保存名にもユーザー名を含める必要はありません。オプションの意味は[OpenSSH公式マニュアル](https://man.openbsd.org/ssh-keygen)でも確認できます。
@@ -118,7 +118,7 @@ ssh-keygen -lf "$env:USERPROFILE\.ssh\id_ed25519_i2lab.pub" -E sha256
 
 - 希望するFreeIPAユーザー名（発行済みなら確定名）
 - 公開鍵 `.pub` の1行全体とそのFingerPrint（指紋）
-- 利用する経路（`-lan`・`-campus`・`-ssm`）、希望GPU、その他の申請項目
+- 利用する経路（`-lan`・`-campus`）、希望GPU、その他の申請項目
 
 拡張子なしのファイルは秘密鍵です。`-----BEGIN OPENSSH PRIVATE KEY-----` と表示された場合は秘密鍵を開いています。その内容を提出しないでください。秘密鍵・パスフレーズ・パスワードは、サーバー、共有領域、Git、Issue、チャットへコピーしません。
 
@@ -130,7 +130,7 @@ ssh-keygen -lf "$env:USERPROFILE\.ssh\id_ed25519_i2lab.pub" -E sha256
 
 利用する経路の設定例を自分のPCのSSH configへ取り込みます。`-campus` の `campus-jump` は `User campus-relay` を使用します。Quadra・GPUの `User` には本人のFreeIPAユーザー名を設定します。
 
-- `-lan`・`-ssm`：[直接接続・AWS経由の設定例](../config/ssh_config.example)
+- `-lan`：[直接接続の設定例](../config/ssh_config.example)
 - `-campus`：[学内踏み台経由の設定例](../config/ssh_config.campus.example)
 
 | 設定例の置換箇所 | 設定する値 |
@@ -146,7 +146,7 @@ Windowsの秘密鍵パスは `"C:/Users/本人のWindowsユーザー名/.ssh/id_
 ssh -G rtx5090-campus
 ```
 
-`user` が確定名、`identityfile` が作成した秘密鍵、`proxyjump` が `quadra-campus` になっているか確認します。`ssh -G` は設定表示だけで、登録・到達性・接続成功は確認しません。その後は[学内接続](campus-user-guide.md#6-順番に接続を確認する)、[直接接続](lan-user-guide.md)、[SSM接続](remote-access-user-guide.md)の該当手順へ進みます。
+`user` が確定名、`identityfile` が作成した秘密鍵、`proxyjump` が `quadra-campus` になっているか確認します。`ssh -G` は設定表示だけで、登録・到達性・接続成功は確認しません。その後は[学内接続](campus-user-guide.md#6-順番に接続を確認する)、[直接接続](lan-user-guide.md)の該当手順へ進みます。
 
 ## 6. よくある疑問・入力要求
 

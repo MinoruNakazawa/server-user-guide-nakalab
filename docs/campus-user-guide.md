@@ -1,15 +1,15 @@
 # 研究室外の学内利用者向け GPU利用マニュアル
 
-研究室外のゼミ生などが、学内ネットワークから研究室のGPUサーバーを利用するための手順です。申請、SSH鍵の準備、管理者による登録、PCの設定、動作確認の順に進めます。
+研究室外のゼミ生などが、学内ネットワークまたはremote-VPN接続後に研究室のGPUサーバーを利用するための手順です。申請、SSH鍵の準備、管理者による登録、PCの設定、動作確認の順に進めます。
 
 ## 1. 利用対象と接続方法
 
-| 利用者 | 利用する接続名 | AWSの準備 |
-| --- | --- | --- |
-| 研究室外の学内利用者・ゼミ生 | `-campus` | 不要。AWSアカウント発行・AWS CLI・SSOログインは行いません |
-| 研究室内の利用者 | `-lan`・`-campus`・`-ssm` | `-ssm`を使う場合だけ必要 |
+| 利用者 | 利用する接続名 |
+| --- | --- |
+| 研究室外の学内利用者・ゼミ生 | `-campus` |
+| 研究室内の利用者 | `-lan`・`-campus` |
 
-研究室内の `-lan` は接続先への直接通信が可能なネットワーク、`-campus` は学内踏み台へ到達できるネットワーク、`-ssm` はAWS経由で接続する場合に使います。いずれも承認されたサーバー・権限の範囲で利用します。
+研究室内の `-lan` は接続先への直接通信が可能なネットワーク、`-campus` は学内踏み台へ到達できるネットワーク。いずれも承認されたサーバー・権限の範囲で利用します。学外では先に[remote-VPN利用案内](https://uranus.mars.kanazawa-it.ac.jp/dpc/navi_network/navi_network_5/)に従ってVPNへ接続し、踏み台に到達できることを確認します。VPNだけでは利用許可やSSH公開鍵登録は完了しません。
 
 [全体構成と接続経路の比較](system-overview.md)も参照してください。本書で使用する経路は次のとおりです。
 
@@ -23,15 +23,15 @@
 
 ## 2. 申請する
 
-管理者は中沢実（[nakazawa@infor.kanazawa-it.ac.jp](mailto:nakazawa@infor.kanazawa-it.ac.jp)）です。申請は、[申請フォーム](https://forms.cloud.microsoft/pages/responsepage.aspx?id=Xbxum3IjmUClZWULy8MnT6rI0kF_K9lEhfaBpChXa5JUNzlWOE05NlQxWVFDNlExMVhRV09BT05YSS4u&route=shorturl)，もしくは，管理者へ大学のメールアドレスから申請内容を送ってください。AWS情報は取得せず、「研究室外・学内利用のみ（-campus）、AWS利用なし」と明記します。
+管理者は中沢実（[nakazawa@infor.kanazawa-it.ac.jp](mailto:nakazawa@infor.kanazawa-it.ac.jp)）です。申請は、[申請フォーム](https://forms.cloud.microsoft/pages/responsepage.aspx?id=Xbxum3IjmUClZWULy8MnT6rI0kF_K9lEhfaBpChXa5JUNzlWOE05NlQxWVFDNlExMVhRV09BT05YSS4u&route=shorturl)，もしくは，管理者へ大学のメールアドレスから申請内容を送ってください。「-campus利用」と、学外から使う場合はremote-VPNを利用する旨を明記します。
 
 | 申請内容 | 記載すること |
 | --- | --- |
 | 本人・所属 | 氏名、学籍番号、所属学科・研究室・ゼミ、指導教員 |
 | 連絡先 | 大学のメールアドレス |
-| 利用区分 | 研究室外・学内利用のみ（-campus）、AWS利用なし |
+| 利用区分 | -campus利用。学外から使う場合はremote-VPNも利用 |
 | 利用目的・期間 | 用途、開始日、終了予定日 |
-| 接続元 | PCのOS、利用予定の学内ネットワーク・場所 |
+| 接続元 | PCのOS、利用予定のネットワーク・場所（学外利用ではremote-VPN） |
 | 希望アカウント | 希望するFreeIPAユーザー名。最終的な名前は管理者が通知 |
 | 必要な資源 | GPUサーバー、共有領域、必要ならDocker利用の理由 |
 | SSH公開鍵・FingerPrint（指紋） | 次節で作成する `.pub` の1行全体と `SHA256:...` |
@@ -59,7 +59,7 @@
 
 踏み台の `campus-relay` と本人のFreeIPAアカウントは別のものです。踏み台ユーザー名は共通でも、鍵は利用者ごとに登録します。Quadra・GPUには本人のFreeIPAユーザー名を設定し、他人の研究室アカウントや秘密鍵を共有しません。既存のSSH configで `campus-jump` の `User` が `pi` の場合は、`campus-relay` へ変更してください。
 
-管理者は研究室外の学内利用者にAWSアカウント・SSM権限を発行しません。踏み台で本人の公開鍵とQuadraのトンネル入口への転送許可、Quadra・GPUで本人のログイン権限を設定します。利用者が踏み台上の設定や常駐サービスを変更する必要はありません。
+踏み台で本人の公開鍵とQuadraのトンネル入口への転送許可、Quadra・GPUで本人のログイン権限を設定します。利用者が踏み台上の設定や常駐サービスを変更する必要はありません。
 
 ## 5. 自分のPCのSSH設定を作る
 
@@ -178,4 +178,4 @@ VS CodeとMicrosoftのRemote - SSH拡張を導入します。`Remote-SSH: Connec
 
 終了・延長は管理者へ連絡します。端末紛失や鍵漏えいが疑われる場合も直ちに連絡し、管理者が踏み台とFreeIPA両方の登録・権限を見直します。共有データは引継ぎを確認して扱い、他人のデータを削除しません。
 
-研究室内のSSM利用は[SSM利用者ガイド](remote-access-user-guide.md)を参照してください。踏み台・トンネルの運用は管理者へ依頼します。
+踏み台・トンネルの運用は管理者へ依頼します。

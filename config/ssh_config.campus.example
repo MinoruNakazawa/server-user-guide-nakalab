@@ -1,9 +1,9 @@
 # 学内踏み台経由（-campus）：研究室外の学内利用者向け。研究室内利用者も使用可。
-# AWSアカウント・AWS CLI・SSO loginは不要。
+# 学外からは大学のremote-VPNに接続後、学内踏み台へ到達できる場合に使用。
 # PC → 学内踏み台 → リバーストンネル → Quadra → GPU。学内踏み台のTCP/22へ到達できること。
 # campus-jumpとquadra-campusは必須。GPUは許可された接続先のブロックを取り込む。
 # トンネルは管理者がQuadraで維持する。利用者が起動する必要はない。
-# 直接接続の-lan・AWS経由の-ssmは ssh_config.example を参照。
+# 直接接続の-lanは ssh_config.example を参照。
 #
 # 鍵の作成・公開鍵の提出は ../docs/ssh-key-setup.md、全体構成は ../docs/system-overview.md を参照。
 # 鍵の-Cコメントは識別用。Userには管理者が確定したアカウント名を指定する。

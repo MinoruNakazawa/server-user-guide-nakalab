@@ -2,37 +2,31 @@
 
 自分の利用区分を選んでください。初めて利用する場合は、申請・承認と本人のSSH公開鍵の登録が必要です。
 
-- [システム全体と接続経路の選び方](system-overview.md)：構成図、`-campus` と `-ssm` の違い、アカウントと共有領域の仕組み
+- [システム全体と接続経路の選び方](system-overview.md)：構成図、`-lan` と `-campus` の違い、アカウントと共有領域の仕組み
 - [SSH鍵の作成とFreeIPAアカウントへの登録](ssh-key-setup.md)：希望ユーザー名との関係、OS別の鍵作成、公開鍵・FingerPrint（指紋）の提出、SSH設定への反映
 
-| 利用区分 | 最初に読むところ | 接続方法 | AWSの準備 |
-| --- | --- | --- | --- |
-| 研究室内の利用者 | [研究室内利用者の入口](#lab-users) | 直接接続の`-lan`、AWS経由の`-ssm` | `-ssm`の場合に必要 |
-| 研究室外の学内利用者・ゼミ生 | [研究室外利用者の入口](#campus-users) | 学内踏み台経由の`-campus` | 不要 |
+| 利用区分 | 最初に読むところ | 接続方法 |
+| --- | --- | --- |
+| 研究室内の利用者 | [研究室内利用者の入口](#lab-users) | 直接接続の`-lan`。到達性に応じて`-campus` |
+| 研究室外の学内利用者・ゼミ生 | [研究室外利用者の入口](#campus-users) | 学内踏み台経由の`-campus` |
 
-研究室内の利用者も、学内踏み台へ到達できる環境では`-campus`を利用できます。研究室外の利用者は本書では**学内からの利用者**を指し、AWS利用権限は発行しません。
+研究室内の利用者も、学内踏み台へ到達できる環境では`-campus`を利用できます。学外からは[remote-VPN利用案内](https://uranus.mars.kanazawa-it.ac.jp/dpc/navi_network/navi_network_5/)に従ってVPNへ接続し、VPN経由で到達できる接続名を使います。`-ssm` は使用しません。
 
 <a id="lab-users"></a>
 
-## 研究室内利用者：`-lan`・`-ssm`
+## 研究室内利用者：`-lan`・`-campus`
 
-研究室LANなどからGPUのSSHへ直接到達できる場合は`-lan`、自宅・学外などからAWS経由で接続する場合は`-ssm`を使います。
+GPUのSSHへ直接到達できる場合は`-lan`を使います。学外・自宅では先にremote-VPNへ接続し、GPUへ直接届けば`-lan`、学内踏み台へ届けば`-campus`を使います。
 
 | 手順 | 参照先 |
 | --- | --- |
 | 1. 利用を申請する | [利用申請フォーム](https://forms.cloud.microsoft/r/mgFXy680J1)。利用目的・期間・対象GPU・必要な接続経路を申請し、[SSH鍵の準備](ssh-key-setup.md)で作成した本人の公開鍵とFingerPrint（指紋）を提出 |
-| 2. 承認とアカウント通知を受け取る | FreeIPAユーザー名、公開鍵登録完了、許可GPUを確認。`-ssm`を使う人はAWSの設定情報も受領 |
-| 3. SSH configを設定する | [研究室内向け設定例](../config/ssh_config.example)の冒頭コメントに従う |
-| 4. `-lan`で接続する | [直接接続の利用手順](lan-user-guide.md)。AWS SSO loginは不要 |
-| 5. `-ssm`で接続する | [SSM利用者ガイド](remote-access-user-guide.md)と下記のOS別初期設定を使用 |
+| 2. 承認とアカウント通知を受け取る | FreeIPAユーザー名、公開鍵登録完了、許可GPUを確認 |
+| 3. SSH configを設定する | `-lan` は[直接接続の設定例](../config/ssh_config.example)、`-campus` は[学内踏み台経由の設定例](../config/ssh_config.campus.example)に従う |
+| 4. `-lan`で接続する | [直接接続の利用手順](lan-user-guide.md) |
+| 5. `-campus`で接続する | [学内踏み台経由の利用手順](campus-user-guide.md) |
 
-**AWS SSMを利用する場合のOS別初期設定：**
-
-- [macOS](remote-access-macos-guide.md)
-- [Windows](remote-access-windows-guide.md)
-- [Ubuntu](remote-access-ubuntu-guide.md)
-
-これらのOS別手順はAWS設定を含みます。`-lan`だけを使う場合、AWS関連の導入・認証は不要です。
+学外から利用する場合は、大学の案内に従ってremote-VPNを接続してからSSHの到達性を確認します。VPNへの接続だけではGPU利用権限は付与されません。
 
 設定後は、許可された接続先でホスト名・本人のユーザー名・GPU認識を確認してください。RTX5090を使用する例です。
 
@@ -40,12 +34,11 @@
 # 直接接続できる場所から
 ssh rtx5090-lan 'hostname -f; whoami; nvidia-smi'
 
-# AWS SSMを使用する場合（本人が設定したprofile名に合わせる）
-aws sso login --profile i2lab
-ssh rtx5090-ssm 'hostname -f; whoami; nvidia-smi'
+# VPN接続後、学内踏み台へ到達できる場合
+ssh rtx5090-campus 'hostname -f; whoami; nvidia-smi'
 ```
 
-全GPUの接続名は[研究室内向け設定例](../config/ssh_config.example)のHost行を参照してください。研究室内から`-campus`を使う場合は、下記の学内利用者マニュアルのSSH設定・動作確認を使います。
+全GPUの接続名は[直接接続の設定例](../config/ssh_config.example)と[学内踏み台経由の設定例](../config/ssh_config.campus.example)のHost行を参照してください。研究室内から`-campus`を使う場合は、下記の学内利用者マニュアルのSSH設定・動作確認を使います。
 
 <a id="campus-users"></a>
 
