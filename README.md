@@ -2,6 +2,13 @@
 
 **[利用マニュアルの入口](docs/README.md)から、自分の利用区分を選んでください。**
 
+初めて利用する方は、利用区分に応じたMicrosoft Formsから申請してください。
+
+- 研究室内の利用者：[利用申請フォーム](https://forms.cloud.microsoft/r/mgFXy680J1)
+- 研究室外の学内利用者・ゼミ生：[利用申請フォーム](https://forms.cloud.microsoft/pages/responsepage.aspx?id=Xbxum3IjmUClZWULy8MnT6rI0kF_K9lEhfaBpChXa5JUNzlWOE05NlQxWVFDNlExMVhRV09BT05YSS4u&route=shorturl)
+
+申請前に[SSH鍵の準備](docs/ssh-key-setup.md)を確認し、公開鍵とFingerPrint（指紋）を用意してください。学外から利用する場合は、申請時にremote-VPNを使う予定も伝えてください。
+
 | 利用区分 | マニュアル | 接続方法 |
 | --- | --- | --- |
 | 研究室内の利用者 | [研究室内利用者の入口](docs/README.md#lab-users) | -lan。到達性に応じて-campusも利用可能 |

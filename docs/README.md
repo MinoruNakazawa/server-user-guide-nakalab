@@ -52,7 +52,7 @@ ssh rtx5090-campus 'hostname -f; whoami; nvidia-smi'
 自分のPC → 学内踏み台 → Quadra → 許可されたGPUサーバー
 ```
 
-1. 学内利用のみであることを明記して申請する。
+1. [Microsoft Formsの申請フォーム](https://forms.cloud.microsoft/pages/responsepage.aspx?id=Xbxum3IjmUClZWULy8MnT6rI0kF_K9lEhfaBpChXa5JUNzlWOE05NlQxWVFDNlExMVhRV09BT05YSS4u&route=shorturl)から申請する。学外から利用する場合はremote-VPNを使う予定も伝える。
 2. 本人のSSH鍵を準備し、公開鍵とFingerPrint（指紋）を提出する。
 3. 踏み台・FreeIPA両方への登録完了と、利用許可の通知を受け取る。
 4. [学内向け設定例](../config/ssh_config.campus.example)を自分のSSH configへ取り込み、ユーザー名・鍵パスを置き換える。
