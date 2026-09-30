@@ -1,5 +1,7 @@
 # GPUサーバー利用マニュアル
 
+English: [GPU server user manual](en/README.md)
+
 自分の利用区分を選んでください。初めて利用する場合は、申請・承認と本人のSSH公開鍵の登録が必要です。
 
 - [システム全体と接続経路の選び方](system-overview.md)：構成図、`-lan` と `-campus` の違い、アカウントと共有領域の仕組み

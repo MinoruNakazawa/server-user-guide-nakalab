@@ -2,6 +2,8 @@
 
 **[利用マニュアルの入口](docs/README.md)から、自分の利用区分を選んでください。**
 
+**English manual for international students:** [GPU server user manual](docs/en/README.md)
+
 初めて利用する方は、利用区分に応じたMicrosoft Formsから申請してください。
 
 - 研究室内の利用者：[利用申請フォーム](https://forms.cloud.microsoft/r/mgFXy680J1)
